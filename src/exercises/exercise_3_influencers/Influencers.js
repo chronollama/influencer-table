@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 
 import data from '../../data.json'
@@ -27,6 +27,7 @@ const Container = styled.div({
 
 const Influencers = () => {
   const [search, setSearch] = useState('')
+  const [sortedData, setSortedData] = useState([])
 
   // const uniqueData = uniqueBy(data, 'member') // use the uniqueBy util to unique our data by the "member" values
 
@@ -35,6 +36,10 @@ const Influencers = () => {
     'affiliation',
     'affiliationPosition',
   ]) // use the filterBy util to filter our data by the given search term
+
+  useEffect(() => {
+    setSortedData(filteredData)
+  }, [])
 
   const columns = [
     {name: 'member', displayName: 'Member', style: {width: '100px'}},
@@ -64,13 +69,20 @@ const Influencers = () => {
     )
   }
 
+  const sortByDescendingPriority = useCallback(() => {
+    const priorityMap = {High: 1, Medium: 0, Low: -1}
+    const sorted = filteredData.sort((a, b) => {
+      return priorityMap[b.priority] - priorityMap[a.priority]
+    })
+    setSortedData(sorted)
+  }, [filteredData])
+
   return (
     <Container>
       <h1>Pulse Analytics Take Home Assignment ✏️ </h1>
       <SearchBar setSearch={setSearch} search={search} />
-      <button>Sort by Priority</button>
-      <Table data={filteredData} columns={columns}>{row}</Table>
-      {/* <YourComponentHere data={filteredData} /> */}
+      <button onClick={sortByDescendingPriority}>Sort by Priority</button>
+      <Table data={sortedData} columns={columns}>{row}</Table>
     </Container>
   )
 }
