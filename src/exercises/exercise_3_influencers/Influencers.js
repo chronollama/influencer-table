@@ -58,6 +58,7 @@ const Influencers = () => {
   ]
 
   const row = (rowData, columns) => {
+    // key values theoretically would be unique if we were running uniqueBy on data above
     return (
       <div className='row'>
         {columns.map((col) => {
@@ -66,6 +67,7 @@ const Influencers = () => {
             className={`cell ${col.class}`}
             style={col.style}
             title={rowData[col.name]}
+            key={rowData.member}
           >
             {rowData[col.name]}
           </div>
