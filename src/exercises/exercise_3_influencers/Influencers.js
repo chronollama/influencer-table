@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 
 import data from '../../data.json'
@@ -31,15 +31,17 @@ const Influencers = () => {
 
   // const uniqueData = uniqueBy(data, 'member') // use the uniqueBy util to unique our data by the "member" values
 
-  const filteredData = filterBy(data, search, [
-    'indicationCategory',
-    'affiliation',
-    'affiliationPosition',
-  ]) // use the filterBy util to filter our data by the given search term
+  const filteredData = useMemo(() => {
+    return filterBy(data, search, [
+      'indicationCategory',
+      'affiliation',
+      'affiliationPosition',
+    ])
+  }, [search])
 
   useEffect(() => {
     setSortedData(filteredData)
-  }, [])
+  }, [filteredData])
 
   const columns = [
     {name: 'member', displayName: 'Member', style: {width: '100px'}},
@@ -60,7 +62,11 @@ const Influencers = () => {
       <div className='row'>
         {columns.map((col) => {
           return (
-          <div className={`cell ${col.class}`} style={col.style} title={rowData[col.name]}>
+          <div
+            className={`cell ${col.class}`}
+            style={col.style}
+            title={rowData[col.name]}
+          >
             {rowData[col.name]}
           </div>
         )
@@ -71,7 +77,7 @@ const Influencers = () => {
 
   const sortByDescendingPriority = useCallback(() => {
     const priorityMap = {High: 1, Medium: 0, Low: -1}
-    const sorted = filteredData.sort((a, b) => {
+    const sorted = filteredData.slice().sort((a, b) => {
       return priorityMap[b.priority] - priorityMap[a.priority]
     })
     setSortedData(sorted)
