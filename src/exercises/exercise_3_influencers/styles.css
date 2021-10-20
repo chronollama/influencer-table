@@ -1,0 +1,32 @@
+.table-header, .row {
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.table-header {
+  font-weight: bold;
+}
+
+.row {
+  border: 1px solid black;
+}
+
+.table-header-cell, .cell  {
+  box-sizing: border-box;
+  height: 100%;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+.cell:not(:last-child) {
+  border-right: 1px solid black;
+}
+
+.affiliation-position-column {
+  width: 700px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
