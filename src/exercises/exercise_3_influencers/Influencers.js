@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 
 import data from '../../data.json'
@@ -27,7 +27,8 @@ const Container = styled.div({
 
 const Influencers = () => {
   const [search, setSearch] = useState('')
-  const [sortedData, setSortedData] = useState([])
+  const [isSorted, setIsSorted] = useState(false)
+  const [displayData, setDisplayData] = useState([])
 
   // const uniqueData = uniqueBy(data, 'member') // use the uniqueBy util to unique our data by the "member" values
 
@@ -40,7 +41,11 @@ const Influencers = () => {
   }, [search])
 
   useEffect(() => {
-    setSortedData(filteredData)
+    if (isSorted) {
+      setDisplayData(sortedData)
+    } else {
+      setDisplayData(filteredData)
+    }
   }, [filteredData])
 
   const columns = [
@@ -77,20 +82,23 @@ const Influencers = () => {
     )
   }
 
-  const sortByDescendingPriority = useCallback(() => {
+  const sortedData = useMemo(() => {
     const priorityMap = {High: 1, Medium: 0, Low: -1}
-    const sorted = filteredData.slice().sort((a, b) => {
+    return filteredData.slice().sort((a, b) => {
       return priorityMap[b.priority] - priorityMap[a.priority]
     })
-    setSortedData(sorted)
   }, [filteredData])
+
+  useEffect(() => {
+    if (isSorted) setDisplayData(sortedData)
+  }, [isSorted])
 
   return (
     <Container>
       <h1>Pulse Analytics Take Home Assignment ✏️ </h1>
       <SearchBar setSearch={setSearch} search={search} />
-      <button onClick={sortByDescendingPriority}>Sort by Priority</button>
-      <Table data={sortedData} columns={columns}>{row}</Table>
+      <button onClick={() => setIsSorted(true)}>Sort by Priority</button>
+      <Table data={displayData} columns={columns}>{row}</Table>
     </Container>
   )
 }
