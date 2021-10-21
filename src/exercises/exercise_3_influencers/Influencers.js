@@ -46,7 +46,7 @@ const Influencers = () => {
     } else {
       setDisplayData(filteredData)
     }
-  }, [filteredData])
+  }, [filteredData, isSorted])
 
   const columns = [
     {name: 'member', displayName: 'Member', style: {width: '100px'}},
@@ -88,10 +88,6 @@ const Influencers = () => {
       return priorityMap[b.priority] - priorityMap[a.priority]
     })
   }, [filteredData])
-
-  useEffect(() => {
-    if (isSorted) setDisplayData(sortedData)
-  }, [isSorted])
 
   return (
     <Container>
